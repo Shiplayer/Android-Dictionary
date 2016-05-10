@@ -1,12 +1,16 @@
 package com.advanced.java.ship.dictionary;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -92,15 +96,23 @@ public class FullscreenActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+        GetTranslationOfWords test = new GetTranslationOfWords();
+        test.execute("test");
+        String[] buf;
+        try {
+            buf = test.get();
+            if(buf != null)
+                Log.i("AsyncTask", buf[0]);
+            else
+                Log.e("AsyncTask", "return null");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
 
         // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
+        assert mContentView != null;
+        //mContentView.setOnClickListener(view -> toggle());
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
@@ -127,6 +139,7 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     private void hide() {
+        Log.i("app status", "hide");
         // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -142,6 +155,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
     @SuppressLint("InlinedApi")
     private void show() {
+        Log.i("app status", "show");
         // Show the system bar
         mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -159,5 +173,17 @@ public class FullscreenActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    private boolean mDoublePressBack = false;
+
+    @Override
+    public void onBackPressed(){
+        if (mDoublePressBack){
+            super.onBackPressed();
+        }
+        toggle();
+        mDoublePressBack = true;
+        mHideHandler.postDelayed(() -> mDoublePressBack = false, 500);
     }
 }
