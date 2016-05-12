@@ -1,11 +1,10 @@
 package com.advanced.java.ship.dictionary;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -97,7 +96,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
         GetTranslationOfWords test = new GetTranslationOfWords();
-        test.execute("test");
+        test.execute("accept");
         String[] buf;
         try {
             buf = test.get();

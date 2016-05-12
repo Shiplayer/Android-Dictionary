@@ -1,18 +1,15 @@
 package com.advanced.java.ship.dictionary;
 
 import android.os.AsyncTask;
-import android.util.JsonReader;
 import android.util.Log;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -25,33 +22,51 @@ public class GetTranslationOfWords extends AsyncTask<String, Void, String[]> {
     protected String[] doInBackground(String... params) {
         Log.i("params length", String.valueOf(params.length));
         try {
-            HttpsURLConnection connection = (HttpsURLConnection) new URL("https://translate.yandex.net/api/v1.5/tr.json/translate ? \n" +
-                    "key=trnsl.1.1.20140929T144049Z.28ba2db3ff3933ac.dec41e434ee63bce4feeaba22b4c0d0f40407988\n" +
-                    " & text=hello\n" +
-                    " & lang=ru").openConnection();
-            /*
-            Host: translate.yandex.net
-Accept:
-            Content-Length: 17
-            Content-Type: application/x-www-form-urlencoded
-             */
+            URL url = new URL("https://dictionary.yandex.net/api/v1/dicservice.json/lookup?" +
+                    "key=" + new APIkeys().getApiDict() +
+                    "&text=" + params[0] +
+                    "&lang=en-ru");
+            Log.i("ulr", url.toString());
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            //HttpsURLConnection connection = (HttpsURLConnection) new URL("https://yandex.ru").openConnection();
+
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Host", "translate.yandex.net");
-            connection.setRequestProperty("Accept", "*/*");
-            connection.setRequestProperty("Content-Length", "17");
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.connect();
 
+            Log.i("response_code", String.valueOf(connection.getResponseCode()));
+            Log.i("wtf", "wtf");
+            Log.i("response_message", connection.getResponseMessage());
+
+            String json = "";
             BufferedReader bf = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while(bf.ready()){
-                Log.i("text in AsyncTask", bf.readLine());
+            String buf;
+            while((buf = bf.readLine()) != null){
+                json += buf;
             }
-            /*JsonReader jsonReader = new JsonReader(new InputStreamReader(connection.getInputStream()));
-            jsonReader.beginObject();
-            jsonReader.beginArray();
-            Log.i("json object", String.valueOf(jsonReader.hasNext()));
-            jsonReader.endArray();
-            jsonReader.endObject();*/
+            //JsonReader jsonReader = new JsonReader(new InputStreamReader(connection.getInputStream()));
+            //jsonReader.beginObject();
+            /*while(jsonReader.hasNext()) {
+                if(Objects.equals(jsonReader.nextName(), "text")) {
+                    jsonReader.beginArray();
+                    while(jsonReader.hasNext())
+                        Log.i("json object", String.valueOf(jsonReader.nextString()));
+                    jsonReader.endArray();
+                } else
+                    jsonReader.skipValue();
+            }*/
+            //Log.i("test",jsonReader.toString());
+            try {
+                JSONObject object = new JSONObject(json);
+                TranslatedWord word = new TranslatedWord(object);
+                Log.i("word", word.getWord());
+                String[] tr = word.getTranslate();
+                for(int i = 0; i < word.getLengthTranslate(); i++)
+                    Log.i("translated word", tr[i]);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //jsonReader.endObject();
         } catch (IOException e) {
             e.printStackTrace();
         }
