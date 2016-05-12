@@ -1,6 +1,7 @@
 package com.advanced.java.ship.dictionary;
 
 import android.annotation.SuppressLint;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -8,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+
+import com.advanced.java.ship.dictionary.Dialogs.AddNewWordDialog;
 
 import java.util.concurrent.ExecutionException;
 
@@ -15,7 +19,7 @@ import java.util.concurrent.ExecutionException;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends AppCompatActivity {
+public class FullscreenActivity extends AppCompatActivity implements AddNewWordDialog.NoticeDialogListener{
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -26,7 +30,7 @@ public class FullscreenActivity extends AppCompatActivity {
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
      * user interaction before hiding the system UI.
      */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+    private static final int AUTO_HIDE_DELAY_MILLIS = 15000;
 
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -116,7 +120,14 @@ public class FullscreenActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        Button btn = (Button)findViewById(R.id.dummy_button);
+        assert btn != null;
+        btn.setOnTouchListener((view, motionEvent) -> {
+            DialogFragment dialog = new AddNewWordDialog();
+            dialog.show(getFragmentManager(), "test");
+            mHideHandler.removeCallbacks(mHideRunnable);
+            return false;
+        });
     }
 
     @Override
@@ -163,6 +174,7 @@ public class FullscreenActivity extends AppCompatActivity {
         // Schedule a runnable to display UI elements after a delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
         mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+        mHideHandler.postDelayed(mHideRunnable, AUTO_HIDE_DELAY_MILLIS);
     }
 
     /**
@@ -184,5 +196,16 @@ public class FullscreenActivity extends AppCompatActivity {
         toggle();
         mDoublePressBack = true;
         mHideHandler.postDelayed(() -> mDoublePressBack = false, 500);
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        Log.i("positive", "press");
+        dialog.dismiss();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        Log.i("negative", "press");
     }
 }
