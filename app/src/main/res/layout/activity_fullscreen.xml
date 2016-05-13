@@ -45,6 +45,14 @@
             tools:ignore="UselessParent">
 
             <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="New Button"
+                android:id="@+id/button"
+                android:layout_weight="1"
+                style="?metaButtonBarButtonStyle" />
+
+            <Button
                 android:id="@+id/dummy_button"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="0dp"

@@ -1,15 +1,19 @@
 package com.advanced.java.ship.dictionary;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.advanced.java.ship.dictionary.Dialogs.AddNewWordDialog;
 
@@ -37,6 +41,7 @@ public class FullscreenActivity extends AppCompatActivity implements AddNewWordD
      * and a change of the status and navigation bar.
      */
     private static final int UI_ANIMATION_DELAY = 300;
+    private String getWord = "";
     private final Handler mHideHandler = new Handler();
     private View mContentView;
     private final Runnable mHidePart2Runnable = new Runnable() {
@@ -99,7 +104,7 @@ public class FullscreenActivity extends AppCompatActivity implements AddNewWordD
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
-        GetTranslationOfWords test = new GetTranslationOfWords();
+        /*GetTranslationOfWords test = new GetTranslationOfWords();
         test.execute("accept");
         String[] buf;
         try {
@@ -110,7 +115,7 @@ public class FullscreenActivity extends AppCompatActivity implements AddNewWordD
                 Log.e("AsyncTask", "return null");
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -121,12 +126,23 @@ public class FullscreenActivity extends AppCompatActivity implements AddNewWordD
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         Button btn = (Button)findViewById(R.id.dummy_button);
+        AlertDialog dialog = buildDialog();
         assert btn != null;
-        btn.setOnTouchListener((view, motionEvent) -> {
-            DialogFragment dialog = new AddNewWordDialog();
-            dialog.show(getFragmentManager(), "test");
+
+        // why code is showing many dialogs?
+        btn.setOnClickListener((view) -> {
+            Log.i("dialog", "show");
+            if(!dialog.isShowing())
+                dialog.show();
+            mHideHandler.postDelayed(() -> Log.i("test word", "word = " + getWord), 5000);
             mHideHandler.removeCallbacks(mHideRunnable);
-            return false;
+        });
+
+        Button btn_new = (Button)findViewById(R.id.button);
+        assert btn_new != null;
+        btn_new.setOnClickListener((view) -> {
+            AddNewWordDialog dialogFragment = new AddNewWordDialog();
+            dialogFragment.show(getSupportFragmentManager(), "test");
         });
     }
 
@@ -198,14 +214,38 @@ public class FullscreenActivity extends AppCompatActivity implements AddNewWordD
         mHideHandler.postDelayed(() -> mDoublePressBack = false, 500);
     }
 
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        Log.i("positive", "press");
-        dialog.dismiss();
+    private AlertDialog buildDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(FullscreenActivity.this);
+        LayoutInflater inflater = FullscreenActivity.this.getLayoutInflater();
+        View v = inflater.inflate(R.layout.dialog, null);
+        EditText editText = (EditText)v.findViewById(R.id.edit_word);
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.i("key", String.valueOf(keyCode));
+                return true;
+            }
+        });
+
+        builder.setView(inflater.inflate(R.layout.dialog, null)).setPositiveButton(R.string.add, (dialog, which) -> {
+            Log.i("dialog", "in Activity");
+            Log.i("which", String.valueOf(which));
+            getWord = editText.getText().toString();
+            Log.i("word", "test");
+            Log.i("editText.getText()", String.valueOf(editText.getText()));
+        }).setNegativeButton(R.string.cancel, (dialog, which)-> {
+            dialog.dismiss();
+        });
+        return builder.create();
     }
 
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
+    public void onDialogPositiveClick(android.support.v4.app.DialogFragment dialog) {
+        Log.i("positive", "press");
+    }
+
+    @Override
+    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog) {
         Log.i("negative", "press");
     }
 }

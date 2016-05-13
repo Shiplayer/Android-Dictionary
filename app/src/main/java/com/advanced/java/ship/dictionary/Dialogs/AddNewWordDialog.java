@@ -4,7 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,18 +43,22 @@ public class AddNewWordDialog extends DialogFragment{
     }
 
     private String words;
+    @NonNull
     @SuppressLint("InflateParams")
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public AlertDialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog, null);
+        EditText editText = (EditText)v.findViewById(R.id.edit_word);
 
 
         builder.setView(inflater.inflate(R.layout.dialog, null)).setPositiveButton(R.string.add, (dialog, which) -> {
-            EditText editText = (EditText)v.findViewById(R.id.edit_word);
+            Log.i("dialog", "in other class");
+            Log.i("which", String.valueOf(which));
             words = editText.getText().toString();
             Log.i("word", "test");
+            Log.i("editText.getText()", String.valueOf(editText.getText() == null));
         }).setNegativeButton(R.string.cancel, (dialog, which)-> {
             dialog.dismiss();
         });
