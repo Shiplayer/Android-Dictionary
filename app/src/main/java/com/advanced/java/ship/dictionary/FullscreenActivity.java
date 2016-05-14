@@ -3,6 +3,7 @@ package com.advanced.java.ship.dictionary;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -14,8 +15,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
-import com.advanced.java.ship.dictionary.Dialogs.AddNewWordDialog;
+import com.advanced.java.ship.dictionary.Activity.AddNewWordActivity;
 
 import java.util.concurrent.ExecutionException;
 
@@ -23,7 +25,7 @@ import java.util.concurrent.ExecutionException;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends AppCompatActivity implements AddNewWordDialog.NoticeDialogListener{
+public class FullscreenActivity extends AppCompatActivity{
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -126,14 +128,14 @@ public class FullscreenActivity extends AppCompatActivity implements AddNewWordD
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         Button btn = (Button)findViewById(R.id.dummy_button);
-        AlertDialog dialog = buildDialog();
+//        AlertDialog dialog = buildDialog();
         assert btn != null;
 
         // why code is showing many dialogs?
         btn.setOnClickListener((view) -> {
             Log.i("dialog", "show");
-            if(!dialog.isShowing())
-                dialog.show();
+//            if(!dialog.isShowing())
+//                dialog.show();
             mHideHandler.postDelayed(() -> Log.i("test word", "word = " + getWord), 5000);
             mHideHandler.removeCallbacks(mHideRunnable);
         });
@@ -141,8 +143,10 @@ public class FullscreenActivity extends AppCompatActivity implements AddNewWordD
         Button btn_new = (Button)findViewById(R.id.button);
         assert btn_new != null;
         btn_new.setOnClickListener((view) -> {
-            AddNewWordDialog dialogFragment = new AddNewWordDialog();
-            dialogFragment.show(getSupportFragmentManager(), "test");
+            Intent intent = new Intent(this, AddNewWordActivity.class);
+            startActivity(intent);
+/*            AddNewWordDialog dialogFragment = new AddNewWordDialog();
+            dialogFragment.show(getSupportFragmentManager(), "test");*/
         });
     }
 
@@ -214,7 +218,7 @@ public class FullscreenActivity extends AppCompatActivity implements AddNewWordD
         mHideHandler.postDelayed(() -> mDoublePressBack = false, 500);
     }
 
-    private AlertDialog buildDialog(){
+    /*private AlertDialog buildDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(FullscreenActivity.this);
         LayoutInflater inflater = FullscreenActivity.this.getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog, null);
@@ -237,15 +241,6 @@ public class FullscreenActivity extends AppCompatActivity implements AddNewWordD
             dialog.dismiss();
         });
         return builder.create();
-    }
+    }*/
 
-    @Override
-    public void onDialogPositiveClick(android.support.v4.app.DialogFragment dialog) {
-        Log.i("positive", "press");
-    }
-
-    @Override
-    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog) {
-        Log.i("negative", "press");
-    }
 }
