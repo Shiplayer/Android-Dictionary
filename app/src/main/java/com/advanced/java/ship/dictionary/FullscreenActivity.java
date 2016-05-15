@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -16,8 +18,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.advanced.java.ship.dictionary.Activity.AddNewWordActivity;
+import com.advanced.java.ship.dictionary.Threads.WordProcessing;
 
 import java.util.concurrent.ExecutionException;
 
@@ -153,6 +157,42 @@ public class FullscreenActivity extends AppCompatActivity{
         });
     }
 
+    private Runnable addingWord = () -> {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if(networkInfo == null){
+            //Toast.makeText(getApplicationContext(), "NetworkInfo is null", Toast.LENGTH_LONG).show();
+            Log.i("NetworkInfo", "Network is null");
+            return;
+        }
+        if(!networkInfo.isAvailable()){
+            //Toast.makeText(getApplicationContext(), "Network is not available", Toast.LENGTH_LONG).show();
+            Log.i("Network", "Network is not Available");
+            return;
+        }
+        String word = dummy_content.getText().toString();
+        WordProcessing wp = new WordProcessing(word);
+        Thread t = new Thread(wp);
+        t.start();
+        if(t.isAlive()){
+            try {
+                Log.i("Thread", "wait Thread");
+                t.join(5000);
+                Log.i("Thread", "join");
+                if(t.isAlive())
+                    t.interrupt();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(t.isInterrupted()){
+                //Toast.makeText(getApplicationContext(), "interrupted", Toast.LENGTH_LONG).show();
+                Log.i("Thread_addingWord", "time is over");
+                return;
+            }
+            Log.i("Thread_addingWord", "word = " + wp.getWord());
+        }
+    };
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_CODE_DIALOG_ACTIVITY){
@@ -161,6 +201,7 @@ public class FullscreenActivity extends AppCompatActivity{
                     if(data.getStringExtra("word") != null) {
                         Log.i("word_from_activity", data.getStringExtra("word"));
                         dummy_content.setText(data.getStringExtra("word"));
+                        new Thread(addingWord).start();
                     }
                     else
                         Log.i("word_from_activity", "extra with the name word is null ");
