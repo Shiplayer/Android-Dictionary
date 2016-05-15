@@ -1,5 +1,6 @@
 package com.advanced.java.ship.dictionary.Activity;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,9 @@ public class AddNewWordActivity extends AppCompatActivity {
         assert editText != null;
         btnAdd.setOnClickListener((view) ->{
             Log.i("activity", "editText = " + editText.getText());
+            Intent intent = new Intent();
+            intent.putExtra("word", editText.getText().toString());
+            setResult(RESULT_OK, intent);
             finish();
         });
         Button btnCancel = (Button)findViewById(R.id.btn_cancel);

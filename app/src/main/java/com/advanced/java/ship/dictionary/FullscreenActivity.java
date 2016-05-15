@@ -43,8 +43,10 @@ public class FullscreenActivity extends AppCompatActivity{
      * and a change of the status and navigation bar.
      */
     private static final int UI_ANIMATION_DELAY = 300;
+    private static final int REQUEST_CODE_DIALOG_ACTIVITY = 1;
     private String getWord = "";
     private final Handler mHideHandler = new Handler();
+    private TextView dummy_content;
     private View mContentView;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -106,6 +108,7 @@ public class FullscreenActivity extends AppCompatActivity{
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+        dummy_content = (TextView) findViewById(R.id.dummy_content);
         /*GetTranslationOfWords test = new GetTranslationOfWords();
         test.execute("accept");
         String[] buf;
@@ -144,10 +147,29 @@ public class FullscreenActivity extends AppCompatActivity{
         assert btn_new != null;
         btn_new.setOnClickListener((view) -> {
             Intent intent = new Intent(this, AddNewWordActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_DIALOG_ACTIVITY);
 /*            AddNewWordDialog dialogFragment = new AddNewWordDialog();
             dialogFragment.show(getSupportFragmentManager(), "test");*/
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_CODE_DIALOG_ACTIVITY){
+            if(resultCode == RESULT_OK){
+                if(data.hasExtra("word"))
+                    if(data.getStringExtra("word") != null) {
+                        Log.i("word_from_activity", data.getStringExtra("word"));
+                        dummy_content.setText(data.getStringExtra("word"));
+                    }
+                    else
+                        Log.i("word_from_activity", "extra with the name word is null ");
+                else
+                    Log.i("word_from_activity", "extra with the name word not fount");
+
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
