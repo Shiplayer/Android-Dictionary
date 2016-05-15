@@ -16,11 +16,12 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by Anton on 10.05.2016.
  */
-public class GetTranslationOfWords extends AsyncTask<String, Void, String[]> {
+public class GetTranslationOfWords extends AsyncTask<String, Void, TranslatedWord> {
 
     @Override
-    protected String[] doInBackground(String... params) {
+    protected TranslatedWord doInBackground(String... params) {
         Log.i("params length", String.valueOf(params.length));
+        TranslatedWord word = null;
         try {
             URL url = new URL("https://dictionary.yandex.net/api/v1/dicservice.json/lookup?" +
                     "key=" + new APIkeys().getApiDict() +
@@ -58,7 +59,7 @@ public class GetTranslationOfWords extends AsyncTask<String, Void, String[]> {
             //Log.i("test",jsonReader.toString());
             try {
                 JSONObject object = new JSONObject(json);
-                TranslatedWord word = new TranslatedWord(object);
+                word = new TranslatedWord(object);
                 Log.i("word", word.getWord());
                 String[] tr = word.getTranslate();
                 for(int i = 0; i < word.getLengthTranslate(); i++)
@@ -70,8 +71,6 @@ public class GetTranslationOfWords extends AsyncTask<String, Void, String[]> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String[] buf = new String[1];
-        buf[0] = params[0] + " from AsyncTask";
-        return buf;
+        return word;
     }
 }

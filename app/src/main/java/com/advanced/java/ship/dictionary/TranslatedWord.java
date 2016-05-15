@@ -21,7 +21,7 @@ public class TranslatedWord {
         List<String> listTranslate = new ArrayList<>();
         JSONArray jsonArray = object.getJSONArray("def");
         if(jsonArray.length() > 1)
-            Log.w("jsonArray", "methods jsonArray.length returned more than 1");
+            Log.w("jsonArray", "methods jsonArray.length returned more than 1 (" + jsonArray.length() + ")");
         JSONObject jsonObject = jsonArray.getJSONObject(0);
         this.word = jsonObject.getString("text");
         if(jsonObject.has("ts"))
