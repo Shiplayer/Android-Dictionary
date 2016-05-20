@@ -16,6 +16,8 @@ public class SQLWordsHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TYPE_WORD = " varchar(256)";
     public static final String COLUMN_NAME_TRWORD = "TrWord";
     public static final String COLUMN_TYPE_TRWORD = " varchar(2048)";
+    public static final String COLUMN_NAME_TSWORD = "TsWord";
+    public static final String COLUMN_TYPE_TSWORD = " varchar(256)";
 
     public SQLWordsHelper(Context context, int version) {
         super(context, TABLE_NAME, null, version);
@@ -27,14 +29,19 @@ public class SQLWordsHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + TABLE_NAME + "(" +
                     COLUMN_NAME_ID + COLUMN_TYPE_ID + "," +
                     COLUMN_NAME_WORD + COLUMN_TYPE_WORD + "," +
-                    COLUMN_NAME_TRWORD + COLUMN_TYPE_TRWORD +
+                    COLUMN_NAME_TRWORD + COLUMN_TYPE_TRWORD + "," +
+                    COLUMN_NAME_TSWORD + COLUMN_TYPE_TSWORD +
                 ")");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.i("SQLite", "Upgrade table");
-        db.execSQL("DROP TABLE IF EXIST " + TABLE_NAME);
+        if (newVersion > oldVersion) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_TSWORD + COLUMN_TYPE_TSWORD + " DEFAULT 'none'");
+        }
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 }

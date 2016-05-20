@@ -18,7 +18,7 @@ public class SQLWords {
     private final SQLWordsHelper sqlWordsHelper;
 
     public SQLWords(Context context){
-        sqlWordsHelper = new SQLWordsHelper(context, 1);
+        sqlWordsHelper = new SQLWordsHelper(context, 2);
     }
 
     public boolean write(TranslatedWord translatedWord){
@@ -34,6 +34,7 @@ public class SQLWords {
             contentValues.put(SQLWordsHelper.COLUMN_NAME_ID, translatedWord.getId());
             contentValues.put(SQLWordsHelper.COLUMN_NAME_WORD, translatedWord.getWord());
             contentValues.put(SQLWordsHelper.COLUMN_NAME_TRWORD, trWord);
+            contentValues.put(SQLWordsHelper.COLUMN_NAME_TSWORD, translatedWord.getTranscription());
 
             long rowId = db.insert(SQLWordsHelper.TABLE_NAME, null, contentValues);
             Log.i("SQLWords", "rowId = " + rowId);
@@ -68,7 +69,8 @@ public class SQLWords {
         String[] projection = {
                 SQLWordsHelper.COLUMN_NAME_ID,
                 SQLWordsHelper.COLUMN_NAME_WORD,
-                SQLWordsHelper.COLUMN_NAME_TRWORD
+                SQLWordsHelper.COLUMN_NAME_TRWORD,
+                SQLWordsHelper.COLUMN_NAME_TSWORD
         };
         Cursor cursor = db.query(SQLWordsHelper.TABLE_NAME, projection, null, null, null, null, null);
         TranslatedWord buf;
@@ -78,6 +80,7 @@ public class SQLWords {
                 buf.setId(cursor.getLong(cursor.getColumnIndexOrThrow(SQLWordsHelper.COLUMN_NAME_ID)));
                 buf.setWord(cursor.getString(cursor.getColumnIndexOrThrow(SQLWordsHelper.COLUMN_NAME_WORD)));
                 buf.setTranslate(cursor.getString(cursor.getColumnIndexOrThrow(SQLWordsHelper.COLUMN_NAME_TRWORD)));
+                buf.setTranscription(cursor.getString(cursor.getColumnIndexOrThrow(SQLWordsHelper.COLUMN_NAME_TSWORD)));
                 list.add(buf);
             } while (cursor.moveToNext());
         }
@@ -96,5 +99,11 @@ public class SQLWords {
         Log.w("SQLWords", "this word is already exist");
         cursor.close();
         return true;
+    }
+
+    public void removeAll(){
+        Log.i("Table", "remove");
+        SQLiteDatabase db = sqlWordsHelper.getWritableDatabase();
+        Log.i("Table", String.valueOf(db.delete(SQLWordsHelper.TABLE_NAME, null, null)));
     }
 }
