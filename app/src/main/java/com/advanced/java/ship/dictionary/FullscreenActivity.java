@@ -12,10 +12,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.advanced.java.ship.dictionary.Activity.AddNewWordActivity;
+import com.advanced.java.ship.dictionary.Activity.WordListActivity;
 import com.advanced.java.ship.dictionary.Database.SQLWords;
 import com.advanced.java.ship.dictionary.Threads.WordProcessing;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -44,8 +46,11 @@ public class FullscreenActivity extends AppCompatActivity{
     private String engWord;
     private final Handler mHideHandler = new Handler();
     private TextView dummy_content;
+    private TextView translatedView;
     private View mContentView;
     private SQLWords sqlWords;
+    private Random random = new Random();
+    private List<TranslatedWord> list;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -97,7 +102,8 @@ public class FullscreenActivity extends AppCompatActivity{
         setContentView(R.layout.activity_fullscreen);
 
         sqlWords = new SQLWords(this);
-        List<TranslatedWord> list = sqlWords.read();
+        //sqlWords.removeAll();
+        list = sqlWords.read();
 
         for(TranslatedWord tr : list){
             Log.i("TranslatedWord", tr.toString());
@@ -107,6 +113,21 @@ public class FullscreenActivity extends AppCompatActivity{
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
         dummy_content = (TextView) findViewById(R.id.dummy_content);
+        translatedView = (TextView)findViewById(R.id.textView);
+
+        assert translatedView != null;
+        translatedView.setVisibility(View.GONE);
+        setWordsView();
+
+        mContentView.setOnClickListener(v -> {
+            if(translatedView.getVisibility() != View.GONE){
+                translatedView.setVisibility(View.GONE);
+                setWordsView();
+            } else {
+                translatedView.setVisibility(View.VISIBLE);
+            }
+        });
+
         /*GetTranslationOfWords test = new GetTranslationOfWords();
         test.execute("accept");
         String[] buf;
@@ -128,20 +149,34 @@ public class FullscreenActivity extends AppCompatActivity{
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        Button btn = (Button)findViewById(R.id.dummy_button);
+        Button btnRemove = (Button)findViewById(R.id.btn_remove);
 //        AlertDialog dialog = buildDialog();
-        assert btn != null;
-
+        assert btnRemove != null;
+        btnRemove.setOnClickListener((view) ->{
+            Intent intent = new Intent(this, WordListActivity.class);
+            startActivity(intent);
+        });
         // why code is showing many dialogs?
 
-        Button btn_new = (Button)findViewById(R.id.button);
-        assert btn_new != null;
-        btn_new.setOnClickListener((view) -> {
+        Button btnAdd = (Button)findViewById(R.id.btn_add);
+        assert btnAdd != null;
+        btnAdd.setOnClickListener((view) -> {
             Intent intent = new Intent(this, AddNewWordActivity.class);
             startActivityForResult(intent, REQUEST_CODE_DIALOG_ACTIVITY);
 /*            AddNewWordDialog dialogFragment = new AddNewWordDialog();
             dialogFragment.show(getSupportFragmentManager(), "test");*/
         });
+    }
+
+    private void setWordsView(){
+        if(list.size() > 0) {
+            TranslatedWord trWord = list.get(random.nextInt(list.size()));
+            dummy_content.setText(trWord.getWord());
+            translatedView.setText(trWord.getTranslateInString());
+        } else {
+            String buf = "empty";
+            dummy_content.setText(buf);
+        }
     }
 
     private Runnable addingWord = () -> {
@@ -163,7 +198,9 @@ public class FullscreenActivity extends AppCompatActivity{
                 return;
             }
             Log.i("Thread_addingWord", "word = " + wp.getWord());
-            sqlWords.write(wp.getTranslatedWord());
+            if(sqlWords.write(wp.getTranslatedWord())){
+                list.add(wp.getTranslatedWord());
+            }
             //dummy_content.setText(wp.getTranslatedWord().getTranslate()[0]);
         }
     };

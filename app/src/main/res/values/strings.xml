@@ -6,4 +6,5 @@
     <string name="enter_your_words">enter your words</string>
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
+    <string name="remove_word">Remove word</string>
 </resources>

@@ -52,6 +52,10 @@ public class TranslatedWord {
         this.word = word;
     }
 
+    public void setTranscription(String transcription) {
+        this.transcription = transcription;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -72,13 +76,23 @@ public class TranslatedWord {
         return translate;
     }
 
+    public String getTranslateInString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(String buf : translate){
+            stringBuilder.append(buf).append(", ");
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        return stringBuilder.toString();
+    }
+
     public int getLengthTranslate(){
         return translate.length;
     }
 
     @Override
     public String toString() {
-        return "(Id = " + id + ", Word = " + word + ", translate = " + Arrays.toString(translate) + ")";
+        return "(Id = " + id + ", Word = " + word + ", transcription = " + transcription + ",  translate = " + Arrays.toString(translate) + ")";
 
     }
 }
