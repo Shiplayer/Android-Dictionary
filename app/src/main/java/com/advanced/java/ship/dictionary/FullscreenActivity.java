@@ -1,29 +1,21 @@
 package com.advanced.java.ship.dictionary;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.advanced.java.ship.dictionary.Activity.AddNewWordActivity;
+import com.advanced.java.ship.dictionary.Database.SQLWords;
 import com.advanced.java.ship.dictionary.Threads.WordProcessing;
 
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -48,10 +40,13 @@ public class FullscreenActivity extends AppCompatActivity{
      */
     private static final int UI_ANIMATION_DELAY = 300;
     private static final int REQUEST_CODE_DIALOG_ACTIVITY = 1;
-    private String getWord = "";
+    //private String getWord = "";
+    private String engWord;
     private final Handler mHideHandler = new Handler();
     private TextView dummy_content;
     private View mContentView;
+    private SQLWords sqlWords;
+
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -82,32 +77,31 @@ public class FullscreenActivity extends AppCompatActivity{
         }
     };
     private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
-        }
-    };
+    private final Runnable mHideRunnable = this::hide;
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
      * system UI. This is to prevent the jarring behavior of controls going away
      * while interacting with activity UI.
      */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
-            return false;
+    /*private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
+        if (AUTO_HIDE) {
+            delayedHide(AUTO_HIDE_DELAY_MILLIS);
         }
-    };
+        return false;
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_fullscreen);
+
+        sqlWords = new SQLWords(this);
+        List<TranslatedWord> list = sqlWords.read();
+
+        for(TranslatedWord tr : list){
+            Log.i("TranslatedWord", tr.toString());
+        }
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
@@ -139,13 +133,6 @@ public class FullscreenActivity extends AppCompatActivity{
         assert btn != null;
 
         // why code is showing many dialogs?
-        btn.setOnClickListener((view) -> {
-            Log.i("dialog", "show");
-//            if(!dialog.isShowing())
-//                dialog.show();
-            mHideHandler.postDelayed(() -> Log.i("test word", "word = " + getWord), 5000);
-            mHideHandler.removeCallbacks(mHideRunnable);
-        });
 
         Button btn_new = (Button)findViewById(R.id.button);
         assert btn_new != null;
@@ -158,29 +145,15 @@ public class FullscreenActivity extends AppCompatActivity{
     }
 
     private Runnable addingWord = () -> {
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if(networkInfo == null){
-            //Toast.makeText(getApplicationContext(), "NetworkInfo is null", Toast.LENGTH_LONG).show();
-            Log.i("NetworkInfo", "Network is null");
-            return;
-        }
-        if(!networkInfo.isAvailable()){
-            //Toast.makeText(getApplicationContext(), "Network is not available", Toast.LENGTH_LONG).show();
-            Log.i("Network", "Network is not Available");
-            return;
-        }
-        String word = dummy_content.getText().toString();
-        WordProcessing wp = new WordProcessing(word);
+        String word = engWord;
+        WordProcessing wp = new WordProcessing(word, this);
         Thread t = new Thread(wp);
         t.start();
         if(t.isAlive()){
             try {
                 Log.i("Thread", "wait Thread");
-                t.join(5000);
-                Log.i("Thread", "join");
-                if(t.isAlive())
-                    t.interrupt();
+                t.join();
+                Log.i("Thread", "join in addingWord");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -190,6 +163,8 @@ public class FullscreenActivity extends AppCompatActivity{
                 return;
             }
             Log.i("Thread_addingWord", "word = " + wp.getWord());
+            sqlWords.write(wp.getTranslatedWord());
+            //dummy_content.setText(wp.getTranslatedWord().getTranslate()[0]);
         }
     };
 
@@ -200,7 +175,7 @@ public class FullscreenActivity extends AppCompatActivity{
                 if(data.hasExtra("word"))
                     if(data.getStringExtra("word") != null) {
                         Log.i("word_from_activity", data.getStringExtra("word"));
-                        dummy_content.setText(data.getStringExtra("word"));
+                        engWord = data.getStringExtra("word");
                         new Thread(addingWord).start();
                     }
                     else

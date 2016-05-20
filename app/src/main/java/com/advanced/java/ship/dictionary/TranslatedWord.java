@@ -7,15 +7,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Anton on 12.05.2016.
  */
 public class TranslatedWord {
-    final private String word;
-    final private String transcription;
+    private long id = 0;
+    private String word;
+    private String transcription;
     private String[] translate;
+
+    public TranslatedWord(){}
 
     public TranslatedWord(JSONObject object) throws JSONException {
         List<String> listTranslate = new ArrayList<>();
@@ -40,6 +44,22 @@ public class TranslatedWord {
         this.translate = translate;
     }
 
+    public void setTranslate(String translate){
+        this.translate = translate.split(",");
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
     public String getWord() {
         return word;
     }
@@ -54,5 +74,11 @@ public class TranslatedWord {
 
     public int getLengthTranslate(){
         return translate.length;
+    }
+
+    @Override
+    public String toString() {
+        return "(Id = " + id + ", Word = " + word + ", translate = " + Arrays.toString(translate) + ")";
+
     }
 }
