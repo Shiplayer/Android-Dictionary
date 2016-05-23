@@ -2,16 +2,40 @@
 <items version="2" >
 
     <item
-        jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.3.0\jars\classes.jar"
-        revision="24.0.0 rc3"
-        sha1="8a034dd16c0dfd75fe86c52c2cd581592acc684a">
-        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\classes-c7e26d00551685882b908cb44fab4a2e7c555603.jar" />
-    </item>
-    <item
         jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.3.0\jars\classes.jar"
         revision="24.0.0 rc3"
         sha1="1b8e03daaa43fb0a4cd57e378167c2fd70454c1e">
         <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\classes-f20d511b3cd9fdb30fb079a4d2d853db8067cb76.jar" />
+    </item>
+    <item
+        jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.3.0\jars\classes.jar"
+        revision="24.0.0 rc4"
+        sha1="1b8e03daaa43fb0a4cd57e378167c2fd70454c1e">
+        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\classes-f20d511b3cd9fdb30fb079a4d2d853db8067cb76.jar" />
+    </item>
+    <item
+        jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.3.0\jars\classes.jar"
+        revision="24.0.0 rc3"
+        sha1="23be6993826b8fd88bbc8d14928bb3b8960d3d4e">
+        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\classes-457c1ad81f3daf8b03ac6a0fb6484e6e94681776.jar" />
+    </item>
+    <item
+        jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.3.0\jars\classes.jar"
+        revision="24.0.0 rc4"
+        sha1="23be6993826b8fd88bbc8d14928bb3b8960d3d4e">
+        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\classes-457c1ad81f3daf8b03ac6a0fb6484e6e94681776.jar" />
+    </item>
+    <item
+        jar="D:\Android\sdk\platforms\android-23\android.jar"
+        revision="24.0.0 rc4"
+        sha1="eee3e49de0e3c71c5f278ba7e4fe847483f9084c">
+        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\runtime\android-4086debce8e780d6be71ce47ba2912b24c6cebfc.jar" />
+    </item>
+    <item
+        jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.3.0\jars\classes.jar"
+        revision="24.0.0 rc3"
+        sha1="8a034dd16c0dfd75fe86c52c2cd581592acc684a">
+        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\classes-c7e26d00551685882b908cb44fab4a2e7c555603.jar" />
     </item>
     <item
         jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.3.0\jars\classes.jar"
@@ -26,16 +50,34 @@
         <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\support-annotations-23.3.0-7cd194c6f3f4f301c835750b93d55cdb37d12acf.jar" />
     </item>
     <item
+        jar="D:\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.3.0\support-annotations-23.3.0.jar"
+        revision="24.0.0 rc4"
+        sha1="db7791d75a07fef9844d06236c1c59ba7bf6997c">
+        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\support-annotations-23.3.0-7cd194c6f3f4f301c835750b93d55cdb37d12acf.jar" />
+    </item>
+    <item
+        jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.3.0\jars\libs\internal_impl-23.3.0.jar"
+        revision="24.0.0 rc4"
+        sha1="4da5a4d697d32497c6f85567a5112e62fdfd0676">
+        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\internal_impl-23.3.0-e16d4b733842179643099fdd5c9e90812bbb78f6.jar" />
+    </item>
+    <item
         jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.3.0\jars\libs\internal_impl-23.3.0.jar"
         revision="24.0.0 rc3"
         sha1="4da5a4d697d32497c6f85567a5112e62fdfd0676">
         <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\internal_impl-23.3.0-e16d4b733842179643099fdd5c9e90812bbb78f6.jar" />
     </item>
     <item
-        jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.3.0\jars\classes.jar"
-        revision="24.0.0 rc3"
-        sha1="23be6993826b8fd88bbc8d14928bb3b8960d3d4e">
-        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\classes-457c1ad81f3daf8b03ac6a0fb6484e6e94681776.jar" />
+        jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.3.0\jars\classes.jar"
+        revision="24.0.0 rc4"
+        sha1="a0b5d60246cd9d4f3f2443611b3b4c25265840b5">
+        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\classes-d8754eddcb9363f54d72e774468cd40272512894.jar" />
+    </item>
+    <item
+        jar="D:\github\Android-Dictionary\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.3.0\jars\classes.jar"
+        revision="24.0.0 rc4"
+        sha1="8a034dd16c0dfd75fe86c52c2cd581592acc684a">
+        <dex dex="D:\github\Android-Dictionary\app\build\intermediates\jill\debug\packaged\classes-c7e26d00551685882b908cb44fab4a2e7c555603.jar" />
     </item>
     <item
         jar="D:\Android\sdk\platforms\android-23\android.jar"
