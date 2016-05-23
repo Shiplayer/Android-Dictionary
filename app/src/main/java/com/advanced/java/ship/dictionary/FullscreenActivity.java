@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.advanced.java.ship.dictionary.Activity.WordListActivity;
 import com.advanced.java.ship.dictionary.Database.SQLWords;
 import com.advanced.java.ship.dictionary.Threads.WordProcessing;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -154,6 +156,7 @@ public class FullscreenActivity extends AppCompatActivity{
         assert btnRemove != null;
         btnRemove.setOnClickListener((view) ->{
             Intent intent = new Intent(this, WordListActivity.class);
+            intent.putParcelableArrayListExtra("list_words", (ArrayList<? extends Parcelable>) list);
             startActivity(intent);
         });
         // why code is showing many dialogs?

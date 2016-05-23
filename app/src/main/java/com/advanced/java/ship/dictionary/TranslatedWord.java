@@ -1,5 +1,7 @@
 package com.advanced.java.ship.dictionary;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -13,7 +15,7 @@ import java.util.List;
 /**
  * Created by Anton on 12.05.2016.
  */
-public class TranslatedWord {
+public class TranslatedWord implements Parcelable {
     private long id = 0;
     private String word;
     private String transcription;
@@ -39,6 +41,25 @@ public class TranslatedWord {
         }
         translate = listTranslate.toArray(new String[listTranslate.size()]);
     }
+
+    protected TranslatedWord(Parcel in) {
+        id = in.readLong();
+        word = in.readString();
+        transcription = in.readString();
+        translate = in.createStringArray();
+    }
+
+    public static final Creator<TranslatedWord> CREATOR = new Creator<TranslatedWord>() {
+        @Override
+        public TranslatedWord createFromParcel(Parcel in) {
+            return new TranslatedWord(in);
+        }
+
+        @Override
+        public TranslatedWord[] newArray(int size) {
+            return new TranslatedWord[size];
+        }
+    };
 
     public void setTranslate(String[] translate) {
         this.translate = translate;
@@ -94,5 +115,18 @@ public class TranslatedWord {
     public String toString() {
         return "(Id = " + id + ", Word = " + word + ", transcription = " + transcription + ",  translate = " + Arrays.toString(translate) + ")";
 
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(word);
+        dest.writeString(transcription);
+        dest.writeStringArray(translate);
     }
 }
